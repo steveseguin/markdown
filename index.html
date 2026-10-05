@@ -345,7 +345,7 @@ h6:hover .header-anchor {
         return textArea.value;
     }
 
-    function generate() {
+    function generate(anchor = '') {
         const input = document.getElementById("input").value;
         const previewElement = document.getElementById('preview');
         const sharableElement = document.getElementById('sharable');
@@ -366,7 +366,7 @@ h6:hover .header-anchor {
                         document.title = decodeHtmlEntities(titleMatch[1]) + ' - Markdown Viewer';
                     }
                     addClickableAnchors();
-                    updateSharableLink();
+                    updateSharableLink(anchor);
                     sharableElement.scrollIntoView({ behavior: 'smooth' });
                     handleAnchor();
                 })
@@ -467,7 +467,10 @@ h6:hover .header-anchor {
             document.getElementById('full-interface').style.display = 'none';
             document.getElementById('content-only-mode').style.display = 'block';
             document.getElementById('preview').style.marginTop = '20px';
-            generate();
+            const anchor = /^#section-\d+$/.test(window.location.hash)
+                ? window.location.hash.slice(1)
+                : '';
+            generate(anchor);
         }
     });
 
