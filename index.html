@@ -345,7 +345,11 @@ h6:hover .header-anchor {
         return textArea.value;
     }
 
+    let latestGeneration = 0;
+    let displayedMarkdownUrl = '';
+
     function generate() {
+        const generation = ++latestGeneration;
         const input = document.getElementById("input").value;
         const previewElement = document.getElementById('preview');
         const sharableElement = document.getElementById('sharable');
@@ -359,18 +363,21 @@ h6:hover .header-anchor {
                     return response.text();
                 })
                 .then(text => {
+                    if (generation !== latestGeneration) return;
                     const html = marked.parse(text);
                     previewElement.innerHTML = html;
                     const titleMatch = html.match(/<h1[^>]*>(.*?)<\/h1>/);
                     if (titleMatch) {
                         document.title = decodeHtmlEntities(titleMatch[1]) + ' - Markdown Viewer';
                     }
+                    displayedMarkdownUrl = input;
                     addClickableAnchors();
                     updateSharableLink();
                     sharableElement.scrollIntoView({ behavior: 'smooth' });
                     handleAnchor();
                 })
                 .catch(error => {
+                    if (generation !== latestGeneration) return;
                     console.error('Error loading the Markdown:', error);
                     previewElement.innerHTML = `<p class="error">Error loading the Markdown. Please check the URL and try again.</p>`;
                 });
@@ -405,7 +412,7 @@ h6:hover .header-anchor {
     }
 
     function updateSharableLink(anchor = '') {
-        const input = document.getElementById("input").value;
+        const input = displayedMarkdownUrl;
         let sharableUrl = `${window.location.origin}${window.location.pathname}?url=${encodeURIComponent(input)}`;
         if (anchor) {
             sharableUrl += `#${anchor}`;
