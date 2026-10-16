@@ -442,7 +442,7 @@ h6:hover .header-anchor {
 
     function convertUrl(url) {
         // Convert GitHub Gist URLs
-        const gistRegex = /^https:\/\/gist\.github\.com\/([^\/]+\/[^\/]+)/;
+        const gistRegex = /^https:\/\/gist\.github\.com\/([^\/?#]+\/[^\/?#]+)/;
         const gistMatch = url.match(gistRegex);
         if (gistMatch) {
             return `https://gist.githubusercontent.com/${gistMatch[1]}/raw`;
